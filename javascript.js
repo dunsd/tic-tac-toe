@@ -1,4 +1,9 @@
-// create player module
+const container = document.querySelector('.board');
+const squares = container.querySelectorAll('.square');
+squares.forEach((square) => square.addEventListener('click', (e) => gameBoard.addMarker(e)));
+
+const resultDisplay = document.querySelector('.result');
+
 const player = (() => {
   let currentPlayer = 0;
   const player1Marker = 'X';
@@ -15,6 +20,8 @@ const player = (() => {
     }
   };
 
+  const checkPlayer = () => currentPlayer;
+
   const getMarker = () => {
     const marker = currentMarker;
     changePlayer();
@@ -23,20 +30,22 @@ const player = (() => {
 
   return {
     getMarker,
+    checkPlayer,
   };
 })();
 
 const gameBoard = (() => {
   const board = [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']];
 
-  const printBoard = () => {
-    console.log(board);
-  };
-
   const checkIfMarker = (x, y) => {
     if (board[y][x] === 'X' || board[y][x] === 'Y') {
+      console.log(board[y][x]);
+      console.log(board);
       return true;
     }
+    console.log(board);
+    console.log('false');
+    console.log(board[y][x]);
     return false;
   };
 
@@ -52,7 +61,6 @@ const gameBoard = (() => {
   const getBoardValue = (x, y) => board[y][x];
 
   return {
-    printBoard,
     addMarker,
     getBoardValue,
   };
@@ -63,7 +71,7 @@ const gameFlow = (() => {
 
   const checkTurn = () => {
     if (turn === 9) {
-      console.log('Tie game');
+      resultDisplay.textContent = 'Tie game';
     }
   };
 
@@ -79,8 +87,17 @@ const gameFlow = (() => {
     || (gameBoard.getBoardValue(2, 0) === gameBoard.getBoardValue(2, 1)
     && gameBoard.getBoardValue(2, 1) === gameBoard.getBoardValue(2, 2))
     || (gameBoard.getBoardValue(2, 0) === gameBoard.getBoardValue(1, 1)
-    && gameBoard.getBoardValue(1, 1) === gameBoard.getBoardValue(0, 2))) {
-      console.log('winner');
+    && gameBoard.getBoardValue(1, 1) === gameBoard.getBoardValue(0, 2))
+    || (gameBoard.getBoardValue(0, 1) === gameBoard.getBoardValue(1, 1)
+    && gameBoard.getBoardValue(1, 1) === gameBoard.getBoardValue(2, 1))
+    || (gameBoard.getBoardValue(1, 0) === gameBoard.getBoardValue(1, 1)
+    && gameBoard.getBoardValue(1, 1) === gameBoard.getBoardValue(1, 2))) {
+      if (player.checkPlayer() === 1) {
+        resultDisplay.textContent = 'Player 1 wins';
+        console.log('Player 1 wins');
+      } else {
+        console.log('Player 2 wins');
+      }
     }
     turn += 1;
     checkTurn();
@@ -90,8 +107,3 @@ const gameFlow = (() => {
     checkResult,
   };
 })();
-
-const container = document.querySelector('.board');
-const squares = container.querySelectorAll('.square');
-squares.forEach((square) => square.addEventListener('click', (e) => gameBoard.addMarker(e)));
-gameBoard.printBoard();
