@@ -1,0 +1,11 @@
+.board {
+    border: solid black;
+    width: 600px;
+    height: 600px;
+    display: grid;
+    margin: auto;
+}
+
+.square {
+    border: solid black;
+}
