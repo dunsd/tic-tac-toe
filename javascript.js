@@ -29,36 +29,30 @@ const player = (() => {
     getMarker,
   };
 })();
-const container = document.querySelector('.board');
 
 const gameBoard = (() => {
   const rows = 3;
   const columns = 3;
   const board = [['', '', ''], ['', '', ''], ['', '', '']];
 
-  for (let i = 0; i < rows; i += 1) {
-    board[i] = [];
-    for (let j = 0; j < columns; j += 1) {
-      board[j] = [];
-    }
-  }
+  const printBoard = () => {
+    console.log(board);
+  };
 
-  //   const makeGrid = (gridSize) => {
-  //     container.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
-  //     container.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
-  //     for (let i = 0; i < gridSize * gridSize; i += 1) {
-  //       const square = document.createElement('div');
-  //       square.classList.add('square');
-  //       square.addEventListener('click', (e) => {
-  //         e.target.textContent = player.getMarker();
-  //       });
-  //       container.appendChild(square);
-  //     }
-  //   };
+  const addMarker = (e) => {
+    const x = e.target.getAttribute('data-x');
+    const y = e.target.getAttribute('data-y');
+    board[y][x] = 99;
+    console.log(board);
+    e.target.textContent = 'X';
+  };
 
   return {
-    // makeGrid,
+    printBoard,
+    addMarker,
   };
 })();
-
-gameBoard.makeGrid(3);
+const container = document.querySelector('.board');
+const squares = container.querySelectorAll('.square');
+squares.forEach((square) => square.addEventListener('click', (e) => gameBoard.addMarker(e)));
+gameBoard.printBoard();
