@@ -4,11 +4,27 @@ squares.forEach((square) => square.addEventListener('click', (e) => gameBoard.ad
 
 const resultDisplay = document.querySelector('.result');
 
+const resetButton = document.querySelector('.reset');
+resetButton.addEventListener('click', () => gameFlow.resetGame());
+
+const nameButton = document.querySelector('.enterNames');
+nameButton.addEventListener('click', () => player.enterNames());
+
+const player1Name = document.querySelector('.player1Name');
+const player2Name = document.querySelector('.player2Name');
+
 const player = (() => {
   let currentPlayer = 0;
   const player1Marker = 'X';
   const player2Marker = 'O';
   let currentMarker = 'X';
+  let player1Title = 'Player 1';
+  let player2Title = 'Player 2';
+
+  const enterNames = () => {
+    player1Title = player1Name.value;
+    player2Title = player2Name.value;
+  };
 
   const changePlayer = () => {
     if (currentPlayer === 1) {
@@ -28,14 +44,20 @@ const player = (() => {
     return marker;
   };
 
+  const getPlayer1Name = () => player1Title;
+  const getPlayer2Name = () => player2Title;
+
   return {
     getMarker,
     checkPlayer,
+    enterNames,
+    getPlayer1Name,
+    getPlayer2Name,
   };
 })();
 
 const gameBoard = (() => {
-  const board = [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']];
+  let board = [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']];
 
   const checkIfMarker = (x, y) => {
     if (board[y][x] === 'X' || board[y][x] === 'O') {
@@ -58,11 +80,17 @@ const gameBoard = (() => {
     }
   };
 
+  const resetBoard = () => {
+    board = [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']];
+    squares.forEach((square) => square.textContent = '');
+  };
+
   const getBoardValue = (x, y) => board[y][x];
 
   return {
     addMarker,
     getBoardValue,
+    resetBoard,
   };
 })();
 
@@ -95,10 +123,10 @@ const gameFlow = (() => {
     || (gameBoard.getBoardValue(1, 0) === gameBoard.getBoardValue(1, 1)
     && gameBoard.getBoardValue(1, 1) === gameBoard.getBoardValue(1, 2))) {
       if (player.checkPlayer() === 1) {
-        resultDisplay.textContent = 'Player 1 wins';
+        resultDisplay.textContent = `Congratulations, ${player.getPlayer1Name()} wins!`;
         gameActive = 0;
       } else {
-        resultDisplay.textContent = 'Player 2 wins';
+        resultDisplay.textContent = `Congratulations, ${player.getPlayer2Name()} wins!`;
         gameActive = 0;
       }
     }
@@ -111,8 +139,16 @@ const gameFlow = (() => {
     return gameActive;
   };
 
+  const resetGame = () => {
+    gameBoard.resetBoard();
+    gameActive = 1;
+    resultDisplay.textContent = 'New game!';
+    turn = 0;
+  };
+
   return {
     checkResult,
     getGameState,
+    resetGame,
   };
 })();
