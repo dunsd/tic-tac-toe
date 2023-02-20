@@ -38,24 +38,24 @@ const gameBoard = (() => {
   const board = [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']];
 
   const checkIfMarker = (x, y) => {
-    if (board[y][x] === 'X' || board[y][x] === 'Y') {
-      console.log(board[y][x]);
-      console.log(board);
+    if (board[y][x] === 'X' || board[y][x] === 'O') {
       return true;
     }
-    console.log(board);
-    console.log('false');
-    console.log(board[y][x]);
     return false;
   };
 
   const addMarker = (e) => {
-    const x = e.target.getAttribute('data-x');
-    const y = e.target.getAttribute('data-y');
-    if (checkIfMarker(x, y)) { return; }
-    board[y][x] = player.getMarker();
-    e.target.textContent = board[y][x];
-    gameFlow.checkResult();
+    console.log(gameFlow.getGameState());
+    if (gameFlow.getGameState() === 1) {
+      const x = e.target.getAttribute('data-x');
+      const y = e.target.getAttribute('data-y');
+      if (checkIfMarker(x, y)) { return; }
+      board[y][x] = player.getMarker();
+      e.target.textContent = board[y][x];
+      gameFlow.checkResult();
+    } else {
+      console.log('game is over');
+    }
   };
 
   const getBoardValue = (x, y) => board[y][x];
@@ -68,10 +68,12 @@ const gameBoard = (() => {
 
 const gameFlow = (() => {
   let turn = 0;
+  let gameActive = 1;
 
   const checkTurn = () => {
     if (turn === 9) {
       resultDisplay.textContent = 'Tie game';
+      gameActive = 0;
     }
   };
 
@@ -94,16 +96,23 @@ const gameFlow = (() => {
     && gameBoard.getBoardValue(1, 1) === gameBoard.getBoardValue(1, 2))) {
       if (player.checkPlayer() === 1) {
         resultDisplay.textContent = 'Player 1 wins';
-        console.log('Player 1 wins');
+        gameActive = 0;
       } else {
-        console.log('Player 2 wins');
+        resultDisplay.textContent = 'Player 2 wins';
+        gameActive = 0;
       }
     }
     turn += 1;
     checkTurn();
   };
 
+  const getGameState = () => {
+    console.log(gameActive);
+    return gameActive;
+  };
+
   return {
     checkResult,
+    getGameState,
   };
 })();
